@@ -13,7 +13,7 @@ public class GetDateTime {
 
         String formattedDate = date.format(formatter);
 
-        return "\"" + formattedDate + "\"";
+        return formattedDate;
     }
 
     public static String getTime() {
@@ -23,6 +23,6 @@ public class GetDateTime {
 
         String formattedTime = time.format(formatter);
 
-        return "\"" + formattedTime + "\"";
+        return formattedTime;
     }
 }

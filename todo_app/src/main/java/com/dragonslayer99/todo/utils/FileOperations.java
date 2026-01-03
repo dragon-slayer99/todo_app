@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import com.dragonslayer99.todo.todos.Todo;
 
+import tools.jackson.databind.ObjectMapper;
+
 public class FileOperations {
     public static final String FILE_NAME = "todos.json";
 
@@ -56,22 +58,13 @@ public class FileOperations {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
 
+            ObjectMapper objectMapper = new ObjectMapper();
+
             while ((currentLine = reader.readLine()) != null) {
-                int id;
-                String task;
-                String date;
-                String time;
-                String status;
 
-                id = Integer.parseInt(currentLine.substring(7, currentLine.indexOf(',')));
-                task = currentLine.substring(currentLine.indexOf("task") + 7, currentLine.indexOf("date") - 2);
-                date = currentLine.substring(currentLine.indexOf("date") + 7, currentLine.indexOf("time") - 2);
-                time = currentLine.substring(currentLine.indexOf("time") + 7, currentLine.indexOf("status") - 2);
-                status = currentLine.substring(currentLine.indexOf("status") + 10, currentLine.indexOf('}'));
+                Todo taskTodo = objectMapper.readValue(currentLine, Todo.class);
 
-                Todo todo = new Todo(id, task, date, time, status);
-
-                todoList.add(todo);
+                todoList.add(taskTodo);
 
             }
 
@@ -83,6 +76,7 @@ public class FileOperations {
             System.err.println(e);
         }
 
-        return null;
+        return new ArrayList<>();
+
     }
 }

@@ -1,13 +1,16 @@
 package com.dragonslayer99.todo.todos;
 
 public class Todo {
-    private final int id;
+    private String id;
     private String task;
-    private final String date;
-    private final String time;
+    private String date;
+    private String time;
     private String status;
 
-    public Todo (int id, String task, String date, String time, String status) {
+    public Todo() {
+    }
+
+    public Todo(String id, String task, String date, String time, String status) {
         this.id = id;
         this.task = task;
         this.date = date;
@@ -15,7 +18,7 @@ public class Todo {
         this.status = status;
     }
 
-    public int getID() {
+    public String getID() {
         return id;
     }
 
@@ -35,8 +38,20 @@ public class Todo {
         return status;
     }
 
+    public void setID(String id) {
+        this.id = id;
+    }
+
     public void setTask(String task) {
         this.task = task;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public void setStatus(String status) {
