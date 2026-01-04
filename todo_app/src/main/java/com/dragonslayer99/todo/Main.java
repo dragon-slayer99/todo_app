@@ -9,12 +9,19 @@ import com.dragonslayer99.todo.utils.FileOperations;
 public class Main {
 
         public static void main(String[] args) {
-
-                DisplayInstructions displayinstruction = new DisplayInstructions();
-                displayinstruction.displayInstruction();
+                DisplayInstructions displayInstructionsObj = new DisplayInstructions();
+                displayInstructionsObj.displayInstruction();
                 FileOperations.CreateFile();
 
                 Commands command = new Commands();
+
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> { // for saving the changes made to the existingTodos list before program termination.
+                        try {
+                                command.exit();  
+                        } catch (Exception e) {
+                                System.err.println("Error occured during unexpected program termination!");
+                        }
+                }));
 
                 try (Scanner scanner = new Scanner(System.in)) {
                         String usercommand;
@@ -29,18 +36,18 @@ public class Main {
                                 } else if (usercommand.contains("update")) {
                                         command.updateTodo(usercommand);
                                 } else if (usercommand.contains("delete")) {
-                                        System.out.println("Task Deleted!");
+                                        command.deleteTodo(usercommand);
                                 } else if (usercommand.contains("display")) {
                                         command.display();
                                 } else if (usercommand.contains("exit")) {
-                                        System.out.println("Program ended!");
                                         break;
                                 } else {
                                         System.out.println("Please enter valid command!");
                                 }
                         }
                 } catch (Exception e) {
-                        System.out.println(DisplayInstructions.RED + "Erro while reading user input" + DisplayInstructions.RESET);
+                        System.out.println(DisplayInstructions.RED + "Erro while reading user input"
+                                        + DisplayInstructions.RESET);
                         System.out.println(e);
                 }
 

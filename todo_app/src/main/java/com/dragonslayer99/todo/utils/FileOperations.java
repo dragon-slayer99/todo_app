@@ -1,14 +1,7 @@
 package com.dragonslayer99.todo.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-
-import com.dragonslayer99.todo.todos.Todo;
-
-import tools.jackson.databind.ObjectMapper;
 
 public class FileOperations {
     public static final String FILE_NAME = "todos.json";
@@ -29,54 +22,4 @@ public class FileOperations {
 
     }
 
-    public static String getLastLine() {
-
-        String currentLine;
-        String lastLine = "";
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
-
-            while ((currentLine = reader.readLine()) != null) {
-                lastLine = currentLine;
-            }
-
-            return lastLine;
-
-        } catch (IOException e) {
-            System.err.println(DisplayInstructions.RED + "Error occured while reading for the last line in the file!"
-                    + DisplayInstructions.RESET);
-            System.err.println(e);
-        }
-
-        return lastLine;
-    }
-
-    public static ArrayList<Todo> getTodos() {
-
-        String currentLine;
-        ArrayList<Todo> todoList = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            while ((currentLine = reader.readLine()) != null) {
-
-                Todo taskTodo = objectMapper.readValue(currentLine, Todo.class);
-
-                todoList.add(taskTodo);
-
-            }
-
-            return todoList;
-
-        } catch (IOException e) {
-            System.err.println(DisplayInstructions.RED + "Error occured while reading for the last line in the file!"
-                    + DisplayInstructions.RESET);
-            System.err.println(e);
-        }
-
-        return new ArrayList<>();
-
-    }
 }

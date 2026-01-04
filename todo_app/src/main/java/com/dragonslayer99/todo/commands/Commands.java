@@ -11,7 +11,6 @@ import com.dragonslayer99.todo.utils.FileOperations;
 import com.dragonslayer99.todo.utils.GetDateTime;
 
 import tools.jackson.core.JacksonException;
-// import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 public class Commands {
@@ -19,6 +18,8 @@ public class Commands {
     List<Todo> existingTodos;
     ObjectMapper objectMapper = new ObjectMapper();
     File file = new File(FileOperations.FILE_NAME);
+    int maxTaskLength = 40;
+    int maxStatusLength = 15;
 
     public Commands() {
         loadTodos(objectMapper, file);
@@ -34,6 +35,24 @@ public class Commands {
             existingTodos = objectMapper.readValue(file,
                     objectMapper.getTypeFactory().constructCollectionType(List.class, Todo.class));
         }
+
+        for (Todo t : existingTodos) {
+
+            int currTaskLength = t.getTask().length();
+            int currStatusLength = t.getStatus().length();
+
+            if (currTaskLength > maxTaskLength) {
+                maxTaskLength = currTaskLength;
+            }
+
+            if (currStatusLength > maxStatusLength) {
+                maxStatusLength = currStatusLength;
+            }
+        }
+
+        maxStatusLength += 2;    // little spacing for more readablity of the task
+        maxTaskLength += 2;
+
     }
 
     public void addTodo(String todo) {
@@ -43,10 +62,13 @@ public class Commands {
         Todo jsonTodo = new Todo(ID, task, GetDateTime.getDate(), GetDateTime.getTime(),
                 "In Progress");
 
-        loadTodos(objectMapper, file);
+        // loadTodos(objectMapper, file);
 
         existingTodos.add(jsonTodo);
-        objectMapper.writeValue(file, existingTodos);
+        if(task.length() > maxTaskLength) {
+            maxTaskLength = task.length() + 2;
+        }
+        // objectMapper.writeValue(file, existingTodos);
         System.err.println("successfully written");
 
     }
@@ -63,12 +85,14 @@ public class Commands {
         for (Todo t : existingTodos) {
             if (t.getID().equals(args[1])) {
 
-                String newStatus = "";
-                for (int i = 2; i < args.length; i++) {
+                String newStatus = args[2];
+                for (int i = 3; i < args.length; i++) {
+
                     newStatus = newStatus + " " + args[i];
+
                 }
                 t.setStatus(newStatus);
-                objectMapper.writeValue(file, existingTodos);
+                // objectMapper.writeValue(file, existingTodos);
                 System.out.println("Updated successfully");
                 return "complete";
             }
@@ -77,11 +101,28 @@ public class Commands {
         return "Error occured during updation of the task";
     }
 
-    public String deleteTodo() {
-        return "";
+    public void deleteTodo(String cmd) { // delete 3423-25435-345346-g4545-b4535
+        String args[] = cmd.split(" ");
+
+        if (args.length != 2) {
+            System.out.println("Invalid command!");
+            return;
+        }
+
+        for (int idx = 0; idx < existingTodos.size(); idx++) {
+
+            Todo currTodo = existingTodos.get(idx);
+            if (currTodo.getID().equals(args[1])) {
+
+                existingTodos.remove(idx);
+                System.out.println("Task deleted successfully!");
+                return;
+            }
+
+        }
     }
 
-    public final void display() {
+    public void display() {
 
         try {
             // ObjectMapper objectMapper = new ObjectMapper();
@@ -91,34 +132,39 @@ public class Commands {
             // File file = new File(FileOperations.FILE_NAME);
             // if (file.exists() && file.length() > 0) {
             // existingTodos = objectMapper.readValue(file,
-            // objectMapper.getTypeFactory().constructCollectionType(List.class, Todo.class));
+            // objectMapper.getTypeFactory().constructCollectionType(List.class,
+            // Todo.class));
             // }
 
-            for (int i = 0; i < 145; i++) {
+            int dashLineLength = String
+                    .format("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |", "ID",
+                            "Task", "Date", "Time", "Status")
+                    .length();
+
+            for (int i = 0; i < dashLineLength; i++) {
                 System.out.print("-");
             }
             System.out.print("\n");
 
-            System.out.printf(DisplayInstructions.GREEN + "| %-40s | %-40s | %-12s | %-12s | %-25s |"
+            System.out.printf(DisplayInstructions.GREEN + "| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-"
+                    + maxStatusLength + "s |"
                     + DisplayInstructions.RESET, "ID", "Task", "date", "time", "status");
 
-            // int len = String.format("| %-40s | %-40s | %-10s | %-10s | %-25s |", "ID", "Task", "date", "time", "status").length();
-            // System.out.println(len);    
-
             System.out.println();
-            for (int i = 0; i < 145; i++) {
+            for (int i = 0; i < dashLineLength; i++) {
                 System.out.print("-");
             }
             System.out.print("\n");
 
             for (Todo t : existingTodos) {
 
-                System.out.printf("| %-40s | %-40s | %-12s | %-12s | %-25s |", t.getID(), t.getTask(), t.getDate(),
+                System.out.printf("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |",
+                        t.getID(), t.getTask(), t.getDate(),
                         t.getTime(),
                         t.getStatus());
                 System.out.println();
 
-                for (int i = 0; i < 145; i++) {
+                for (int i = 0; i < dashLineLength; i++) {
                     System.out.print("-");
                 }
 
@@ -128,6 +174,13 @@ public class Commands {
         } catch (JacksonException e) {
             System.err.println("Todos doesn't exist");
         }
+
+    }
+
+    public void exit() {
+
+        objectMapper.writeValue(file, existingTodos);
+        System.out.println("Program terminated!");
 
     }
 
