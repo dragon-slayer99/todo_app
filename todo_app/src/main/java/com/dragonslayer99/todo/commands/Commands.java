@@ -1,6 +1,7 @@
 package com.dragonslayer99.todo.commands;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,9 +10,8 @@ import com.dragonslayer99.todo.todos.Todo;
 import com.dragonslayer99.todo.utils.DisplayInstructions;
 import com.dragonslayer99.todo.utils.FileOperations;
 import com.dragonslayer99.todo.utils.GetDateTime;
-
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Commands {
 
@@ -21,11 +21,11 @@ public class Commands {
     int maxTaskLength = 40;
     int maxStatusLength = 15;
 
-    public Commands() {
+    public Commands() throws IOException {
         loadTodos(objectMapper, file);
     }
 
-    public final void loadTodos(ObjectMapper objectMapper, File file) {
+    public final void loadTodos(ObjectMapper objectMapper, File file) throws IOException {
         // ObjectMapper objectMapper = new ObjectMapper();
         existingTodos = new ArrayList<>();
 
@@ -50,7 +50,7 @@ public class Commands {
             }
         }
 
-        maxStatusLength += 2;    // little spacing for more readablity of the task
+        maxStatusLength += 2; // little spacing for more readablity of the task
         maxTaskLength += 2;
 
     }
@@ -65,7 +65,7 @@ public class Commands {
         // loadTodos(objectMapper, file);
 
         existingTodos.add(jsonTodo);
-        if(task.length() > maxTaskLength) {
+        if (task.length() > maxTaskLength) {
             maxTaskLength = task.length() + 2;
         }
         // objectMapper.writeValue(file, existingTodos);
@@ -122,64 +122,55 @@ public class Commands {
         }
     }
 
-    public void display() {
+    public void display() throws JacksonException {
 
-        try {
-            // ObjectMapper objectMapper = new ObjectMapper();
-            // existingTodos = objectMapper.readValue(new File(FileOperations.FILE_NAME),
-            // new TypeReference<List<Todo>>() {
-            // });
-            // File file = new File(FileOperations.FILE_NAME);
-            // if (file.exists() && file.length() > 0) {
-            // existingTodos = objectMapper.readValue(file,
-            // objectMapper.getTypeFactory().constructCollectionType(List.class,
-            // Todo.class));
-            // }
+        int dashLineLength = String
+                .format("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |", "ID",
+                        "Task", "Date", "Time", "Status")
+                .length();
 
-            int dashLineLength = String
-                    .format("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |", "ID",
-                            "Task", "Date", "Time", "Status")
-                    .length();
+        for (int i = 0; i < dashLineLength; i++) {
+            System.out.print("-");
+        }
+        System.out.print("\n");
+
+        System.out.printf(DisplayInstructions.GREEN + "| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-"
+                + maxStatusLength + "s |"
+                + DisplayInstructions.RESET, "ID", "Task", "date", "time", "status");
+
+        System.out.println();
+        for (int i = 0; i < dashLineLength; i++) {
+            System.out.print("-");
+        }
+        System.out.print("\n");
+
+        for (Todo t : existingTodos) {
+
+            System.out.printf("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |",
+                    t.getID(), t.getTask(), t.getDate(),
+                    t.getTime(),
+                    t.getStatus());
+            System.out.println();
 
             for (int i = 0; i < dashLineLength; i++) {
                 System.out.print("-");
             }
-            System.out.print("\n");
-
-            System.out.printf(DisplayInstructions.GREEN + "| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-"
-                    + maxStatusLength + "s |"
-                    + DisplayInstructions.RESET, "ID", "Task", "date", "time", "status");
 
             System.out.println();
-            for (int i = 0; i < dashLineLength; i++) {
-                System.out.print("-");
-            }
-            System.out.print("\n");
 
-            for (Todo t : existingTodos) {
-
-                System.out.printf("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |",
-                        t.getID(), t.getTask(), t.getDate(),
-                        t.getTime(),
-                        t.getStatus());
-                System.out.println();
-
-                for (int i = 0; i < dashLineLength; i++) {
-                    System.out.print("-");
-                }
-
-                System.out.println();
-
-            }
-        } catch (JacksonException e) {
-            System.err.println("Todos doesn't exist");
         }
 
     }
 
     public void exit() {
 
-        objectMapper.writeValue(file, existingTodos);
+        try {
+
+            objectMapper.writeValue(file, existingTodos);
+
+        } catch (IOException e) {
+            System.err.println("Error while writing to the file!");
+        }
         System.out.println("Program terminated!");
 
     }

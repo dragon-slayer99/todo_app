@@ -1,5 +1,6 @@
 package com.dragonslayer99.todo;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import com.dragonslayer99.todo.commands.Commands;
@@ -8,7 +9,7 @@ import com.dragonslayer99.todo.utils.FileOperations;
 
 public class Main {
 
-        public static void main(String[] args) {
+        public static void main(String[] args) throws IOException {
                 DisplayInstructions displayInstructionsObj = new DisplayInstructions();
                 displayInstructionsObj.displayInstruction();
                 FileOperations.CreateFile();
@@ -43,7 +44,7 @@ public class Main {
                                 break;
                             case "display":
                                 command.display();
-                                break;
+                                break; 
                             case "exit":
                                 break OUTER;
                             default:
