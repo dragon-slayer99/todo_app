@@ -69,16 +69,16 @@ public class Commands {
             maxTaskLength = task.length() + 2;
         }
         // objectMapper.writeValue(file, existingTodos);
-        System.err.println("successfully written");
+        System.out.println(DisplayInstructions.GREEN + "successfully written" + DisplayInstructions.RESET);
 
     }
 
-    public String updateTodo(String cmd) { // update 01 complete
+    public void updateTodo(String cmd) { // update 01 complete
 
         String[] args = cmd.split(" ");
         if (args.length < 3) {
-            System.out.println("Invalid command");
-            return "";
+            System.out.println(DisplayInstructions.RED + "Invalid command" + DisplayInstructions.RESET);
+            return;
         }
         // List<Todo> todoList;
 
@@ -93,19 +93,17 @@ public class Commands {
                 }
                 t.setStatus(newStatus);
                 // objectMapper.writeValue(file, existingTodos);
-                System.out.println("Updated successfully");
-                return "complete";
+                System.out.println(DisplayInstructions.GREEN + "Updated successfully" + DisplayInstructions.RESET);
             }
         }
 
-        return "Error occured during updation of the task";
     }
 
     public void deleteTodo(String cmd) { // delete 3423-25435-345346-g4545-b4535
         String args[] = cmd.split(" ");
 
         if (args.length != 2) {
-            System.out.println("Invalid command!");
+            System.out.println(DisplayInstructions.RED + "Invalid command!" + DisplayInstructions.RESET);
             return;
         }
 
@@ -115,10 +113,18 @@ public class Commands {
             if (currTodo.getID().equals(args[1])) {
 
                 existingTodos.remove(idx);
-                System.out.println("Task deleted successfully!");
+                System.out
+                        .println(DisplayInstructions.GREEN + "Task deleted successfully!" + DisplayInstructions.RESET);
                 return;
             }
 
+        }
+    }
+
+    public void clearTodo(String cmd) {
+        if(cmd.equals("y") || cmd.equals("yes")) {
+            existingTodos.clear();
+            System.out.println(DisplayInstructions.GREEN + "Successfully cleared all tasks!" + DisplayInstructions.RESET);
         }
     }
 
@@ -169,7 +175,8 @@ public class Commands {
             objectMapper.writeValue(file, existingTodos);
 
         } catch (IOException e) {
-            System.err.println("Error while writing to the file!");
+            System.err
+                    .println(DisplayInstructions.RED + "Error while writing to the file!" + DisplayInstructions.RESET);
         }
         System.out.println("Program terminated!");
 
