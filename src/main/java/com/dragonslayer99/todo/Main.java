@@ -10,7 +10,11 @@ import com.dragonslayer99.todo.utils.FileOperations;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
+
         DisplayInstructions displayInstructionsObj = new DisplayInstructions();
+
+        
         displayInstructionsObj.displayInstruction();
         FileOperations.CreateFile();
 
@@ -32,6 +36,13 @@ public class Main {
                 System.out.print("Enter command: ");
                 usercommand = scanner.nextLine();
                 String scannerCmd[] = usercommand.split(" ");
+
+                if (("add".equals(scannerCmd[0]) || "delete".equals(scannerCmd[0]) || "update".equals(scannerCmd[0]))
+                        && scannerCmd.length <= 1) {
+                    DisplayInstructions.printError("Please enter valid arguments!");
+                    continue;
+                }
+
                 switch (scannerCmd[0].toLowerCase()) {
                     case "add":
                         command.addTodo(usercommand);
@@ -45,7 +56,7 @@ public class Main {
                     case "delete":
                         boolean warningGiven = false;
                         if (scannerCmd[1].equals("*") && !warningGiven) {
-                            System.out.println("This action will delete every saved task!");
+                            DisplayInstructions.printError("This action will delete every saved task!");
                             System.out.println("Do you want to continue?(y/n)");
                             warningGiven = true;
                             break;
@@ -59,13 +70,12 @@ public class Main {
                         break OUTER;
 
                     default:
-                        System.out.println("Please enter valid command!");
+                        DisplayInstructions.printError("Please enter valid command!");
                         break;
                 }
             }
         } catch (Exception e) {
-            System.out.println(DisplayInstructions.RED + "Erro while reading user input"
-                    + DisplayInstructions.RESET);
+            DisplayInstructions.printError("Error while reading user input");
             System.out.println(e);
         }
 

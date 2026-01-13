@@ -69,7 +69,7 @@ public class Commands {
             maxTaskLength = task.length() + 2;
         }
         // objectMapper.writeValue(file, existingTodos);
-        System.out.println(DisplayInstructions.GREEN + "successfully written" + DisplayInstructions.RESET);
+        DisplayInstructions.printSuccess("successfully written");
 
     }
 
@@ -77,7 +77,7 @@ public class Commands {
 
         String[] args = cmd.split(" ");
         if (args.length < 3) {
-            System.out.println(DisplayInstructions.RED + "Invalid command" + DisplayInstructions.RESET);
+            DisplayInstructions.printError("Invalid command");
             return;
         }
         // List<Todo> todoList;
@@ -93,7 +93,7 @@ public class Commands {
                 }
                 t.setStatus(newStatus);
                 // objectMapper.writeValue(file, existingTodos);
-                System.out.println(DisplayInstructions.GREEN + "Updated successfully" + DisplayInstructions.RESET);
+                DisplayInstructions.printSuccess("Updated successfully");
             }
         }
 
@@ -103,7 +103,7 @@ public class Commands {
         String args[] = cmd.split(" ");
 
         if (args.length != 2) {
-            System.out.println(DisplayInstructions.RED + "Invalid command!" + DisplayInstructions.RESET);
+            DisplayInstructions.printError("Invalid command!");
             return;
         }
 
@@ -113,8 +113,7 @@ public class Commands {
             if (currTodo.getID().equals(args[1])) {
 
                 existingTodos.remove(idx);
-                System.out
-                        .println(DisplayInstructions.GREEN + "Task deleted successfully!" + DisplayInstructions.RESET);
+                DisplayInstructions.printSuccess("Task deleted successfully!");
                 return;
             }
 
@@ -122,47 +121,65 @@ public class Commands {
     }
 
     public void clearTodo(String cmd) {
-        if(cmd.equals("y") || cmd.equals("yes")) {
+        if (cmd.equals("y") || cmd.equals("yes")) {
             existingTodos.clear();
-            System.out.println(DisplayInstructions.GREEN + "Successfully cleared all tasks!" + DisplayInstructions.RESET);
+            DisplayInstructions.printSuccess("Successfully cleared all tasks!");        
         }
     }
 
     public void display() throws JacksonException {
+
+
+        if(existingTodos.isEmpty()) {
+            DisplayInstructions.printError("No tasks to display!");
+            return;
+        }
 
         int dashLineLength = String
                 .format("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |", "ID",
                         "Task", "Date", "Time", "Status")
                 .length();
 
-        for (int i = 0; i < dashLineLength; i++) {
-            System.out.print("-");
-        }
-        System.out.print("\n");
+        DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
 
         System.out.printf(DisplayInstructions.GREEN + "| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-"
                 + maxStatusLength + "s |"
                 + DisplayInstructions.RESET, "ID", "Task", "date", "time", "status");
 
         System.out.println();
-        for (int i = 0; i < dashLineLength; i++) {
-            System.out.print("-");
-        }
-        System.out.print("\n");
+        DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
 
         for (Todo t : existingTodos) {
 
-            System.out.printf("| %-37s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |",
+            String success = DisplayInstructions.SUCCESS;
+            String reset = DisplayInstructions.RESET;
+            String greenPipe = DisplayInstructions.GREEN + "|" + DisplayInstructions.RESET;
+
+            String displayStr = greenPipe + " %-37s " + greenPipe + " %-" + maxTaskLength + "s " + greenPipe + " %-11s "
+                    + greenPipe + " %-9s "
+                    + greenPipe + " " + "%-" + maxStatusLength
+                    + "s" + " " + greenPipe;
+
+            if (t.getStatus().contains("complete") || t.getStatus().contains("over")) {
+                // displayStr = "| " + success + "%-37s" + reset +
+                // " | " + success + "%-" + maxTaskLength + "s" + reset +
+                // " | " + success + "%-11s" + reset +
+                // " | " + success + "%-9s" + reset +
+                // " | " + success + "%-" + maxStatusLength + "s " + reset +
+                // "|";
+                displayStr = greenPipe + " %-37s " + greenPipe + " %-" + maxTaskLength + "s " + greenPipe + " %-11s " + greenPipe + " %-9s "
+                        + greenPipe + " " + success + "%-" + maxStatusLength
+                        + "s" + reset + " " + greenPipe;
+
+            }
+
+            System.out.printf(displayStr,
                     t.getID(), t.getTask(), t.getDate(),
                     t.getTime(),
                     t.getStatus());
             System.out.println();
 
-            for (int i = 0; i < dashLineLength; i++) {
-                System.out.print("-");
-            }
-
-            System.out.println();
+            DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
 
         }
 
@@ -175,8 +192,7 @@ public class Commands {
             objectMapper.writeValue(file, existingTodos);
 
         } catch (IOException e) {
-            System.err
-                    .println(DisplayInstructions.RED + "Error while writing to the file!" + DisplayInstructions.RESET);
+            DisplayInstructions.printError("Error while writing to the file!");
         }
         System.out.println("Program terminated!");
 

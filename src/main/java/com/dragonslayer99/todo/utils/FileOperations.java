@@ -10,10 +10,11 @@ public class FileOperations {
         try {
             File file = new File(FILE_NAME);
             if (file.createNewFile()) {
-                System.out.println(DisplayInstructions.GREEN + "file successfully created!" + DisplayInstructions.RESET);
+                DisplayInstructions.printSuccess("file successfully created!");
             } else {
-                System.err.println(DisplayInstructions.CYAN + "file already exists!" + DisplayInstructions.RESET);
+                System.out.println(DisplayInstructions.CYAN + "file already exists!" + DisplayInstructions.RESET);
             }
+            System.out.println();
         } catch (IOException e) {
             System.err.println("IO exception occured: " + e);
         } catch (SecurityException e) {
@@ -21,5 +22,6 @@ public class FileOperations {
         }
 
     }
+
 
 }
