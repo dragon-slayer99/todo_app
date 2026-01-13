@@ -18,7 +18,7 @@ public class Commands {
     List<Todo> existingTodos;
     ObjectMapper objectMapper = new ObjectMapper();
     File file = new File(FileOperations.FILE_NAME);
-    int maxTaskLength = 40;
+    int maxTaskLength = 6;
     int maxStatusLength = 15;
 
     public Commands() throws IOException {
