@@ -40,6 +40,19 @@ To start the application, run the JAR file from your terminal:
 java -jar target/todo_app-0.1-SNAPSHOT.jar
 ```
 
+### Running with a Batch File
+
+For convenience, you can create a simple batch file (`.bat`) to launch the application without typing the command every time.
+
+1.  **Create a file** named `run.bat` in the project root directory.
+2.  **Add the following line** to the file:
+    ```batch
+    @echo off
+    java -jar target/todo_app-0.1-SNAPSHOT.jar
+    pause
+    ```
+3.  **Run the application** by simply double-clicking `run.bat` or by running `run.bat` in your terminal.
+
 ### Commands
 
 Once the application is running, you can use the following commands:
