@@ -40,6 +40,8 @@ To start the application, run the JAR file from your terminal:
 java -jar target/todo_app-0.1-SNAPSHOT.jar
 ```
 
+📖 **For detailed commands, features, and usage instructions, see the [User Guide](USER_GUIDE.md).**
+
 ### Running with a Batch File
 
 For convenience, you can create a simple batch file (`.bat`) to launch the application without typing the command every time.
@@ -52,44 +54,6 @@ For convenience, you can create a simple batch file (`.bat`) to launch the appli
     pause
     ```
 3.  **Run the application** by simply double-clicking `run.bat` or by running `run.bat` in your terminal.
-
-### Commands
-
-Once the application is running, you can use the following commands:
-
--   **Add a task**:
-    ```text
-    add <task_name>
-    ```
-    Example: `add Buy groceries`
-
--   **Update a task**:
-    ```text
-    update <task_ID> <status>
-    ```
-    Example: `update 1234-5678 Done`
-
--   **Delete a task**:
-    ```text
-    delete <task_ID>
-    ```
-    Example: `delete 1234-5678`
-
--   **Delete all tasks**:
-    ```text
-    delete *
-    ```
-    *Note: You will be asked for confirmation.*
-
--   **Display tasks**:
-    ```text
-    display
-    ```
-
--   **Exit**:
-    ```text
-    exit
-    ```
 
 ## Technologies
 

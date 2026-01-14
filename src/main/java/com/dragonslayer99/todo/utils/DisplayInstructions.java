@@ -1,5 +1,9 @@
 package com.dragonslayer99.todo.utils;
 
+import java.util.List;
+
+import com.dragonslayer99.todo.todos.Todo;
+
 public class DisplayInstructions {
         public static final String RESET = "\u001B[0m";
         public static final String BLACK = "\u001B[30m";
@@ -68,6 +72,70 @@ public class DisplayInstructions {
 
         public static void printSuccess(String msg) {
                 System.out.println(GREEN + msg + RESET);
+        }
+
+        public static void displayTodos(List<Todo> todos, int maxTaskLength, int maxStatusLength) {
+
+                if (todos.isEmpty()) {
+                        DisplayInstructions.printError("No tasks to display!");
+                        return;
+                }
+
+                int dashLineLength = String
+                                .format("| %-7s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength
+                                                + "s |",
+                                                "TaskNo.", "Task", "Date", "Time", "Status")
+                                .length();
+
+                DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
+
+                System.out.printf(DisplayInstructions.GREEN + "| %-7s | %-" + maxTaskLength + "s | %-11s | %-9s | %-"
+                                + maxStatusLength + "s |"
+                                + DisplayInstructions.RESET, "TaskNo.", "Task", "date", "time", "status");
+
+                System.out.println();
+                DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
+
+                for (Todo t : todos) {
+
+                        String reset = DisplayInstructions.RESET;
+                        String greenPipe = DisplayInstructions.GREEN + "|" + DisplayInstructions.RESET;
+
+                        String displayStr = greenPipe + " %-7s " + greenPipe + " %-" + maxTaskLength + "s "
+                                        + greenPipe + " %-11s "
+                                        + greenPipe + " %-9s "
+                                        + greenPipe + " " + "%-" + maxStatusLength
+                                        + "s" + " " + greenPipe;
+
+                        String userStatus = t.getStatus().toLowerCase();
+                        String statusColor = UserStatus.completedStatus.contains(userStatus)
+                                        ? DisplayInstructions.SUCCESS
+                                        : UserStatus.inCompleteStatus.contains(userStatus)
+                                                        ? DisplayInstructions.UNSUCCESS
+                                                        : UserStatus.cannotCompleteStatus.contains(userStatus)
+                                                                        ? DisplayInstructions.ABANDONED
+                                                                        : "";
+
+                        if (UserStatus.completedStatus.contains(userStatus)
+                                        || UserStatus.inCompleteStatus.contains(userStatus)
+                                        || UserStatus.cannotCompleteStatus.contains(userStatus)) {
+                                displayStr = greenPipe + " %-7s " + greenPipe + " %-" + maxTaskLength + "s "
+                                                + greenPipe + " %-11s "
+                                                + greenPipe + " %-9s "
+                                                + greenPipe + " " + statusColor + "%-" + maxStatusLength
+                                                + "s" + reset + " " + greenPipe;
+
+                        }
+
+                        System.out.printf(displayStr, t.getTaskNo(),
+                                        t.getTask(), t.getDate(),
+                                        t.getTime(),
+                                        t.getStatus());
+                        System.out.println();
+
+                        DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
+
+                }
         }
 
 }

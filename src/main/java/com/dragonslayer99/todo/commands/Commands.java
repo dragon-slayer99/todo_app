@@ -17,6 +17,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Commands {
 
     List<Todo> existingTodos;
+    List<Todo> completedTodos;
+    List<Todo> inCompleteTodos;
+    List<Todo> cannotCompleteTodos;
     ObjectMapper objectMapper = new ObjectMapper();
     File file = new File(FileOperations.FILE_NAME);
     int maxTaskLength = 6;
@@ -38,6 +41,10 @@ public class Commands {
                     objectMapper.getTypeFactory().constructCollectionType(List.class, Todo.class));
         }
 
+        completedTodos = new ArrayList<>();
+        inCompleteTodos = new ArrayList<>();
+        cannotCompleteTodos = new ArrayList<>();
+
         for (Todo t : existingTodos) {
 
             int currTaskLength = t.getTask().length();
@@ -49,6 +56,16 @@ public class Commands {
 
             if (currStatusLength > maxStatusLength) {
                 maxStatusLength = currStatusLength;
+            }
+
+            String todoStatus = t.getStatus().toLowerCase();
+
+            if(UserStatus.completedStatus.contains(todoStatus)) {
+                completedTodos.add(t);
+            } else if(UserStatus.inCompleteStatus.contains(todoStatus)) {
+                inCompleteTodos.add(t);
+            } else {
+                cannotCompleteTodos.add(t);
             }
         }
 
@@ -104,6 +121,24 @@ public class Commands {
 
                 }
                 t.setStatus(newStatus);
+                if(UserStatus.completedStatus.contains(newStatus.toLowerCase())) {
+                    completedTodos.add(t);
+
+                    inCompleteTodos.remove(t);
+                    cannotCompleteTodos.remove(t);
+
+                } else if (UserStatus.inCompleteStatus.contains(newStatus.toLowerCase())) {
+                    inCompleteTodos.add(t);
+
+                    completedTodos.remove(t);
+                    cannotCompleteTodos.remove(t);
+                } else {
+                    cannotCompleteTodos.add(t);
+
+                    completedTodos.remove(t);
+                    inCompleteTodos.remove(t);
+                }
+
                 // objectMapper.writeValue(file, existingTodos);
                 DisplayInstructions.printSuccess("Updated successfully");
                 return;
@@ -149,62 +184,35 @@ public class Commands {
         }
     }
 
-    public void display() throws JacksonException {
+    public void display(String usercommand) throws JacksonException {
 
         if (existingTodos.isEmpty()) {
             DisplayInstructions.printError("No tasks to display!");
             return;
         }
 
-        int dashLineLength = String
-                .format("| %-7s | %-" + maxTaskLength + "s | %-11s | %-9s | %-" + maxStatusLength + "s |",
-                        "TaskNo.", "Task", "Date", "Time", "Status")
-                .length();
+        String[] args = usercommand.split(" ");
 
-        DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
+        int numberOfCmds = args.length;
 
-        System.out.printf(DisplayInstructions.GREEN + "| %-7s | %-" + maxTaskLength + "s | %-11s | %-9s | %-"
-                + maxStatusLength + "s |"
-                + DisplayInstructions.RESET, "TaskNo.", "Task", "date", "time", "status");
-
-        System.out.println();
-        DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
-
-        for (Todo t : existingTodos) {
-
-            String reset = DisplayInstructions.RESET;
-            String greenPipe = DisplayInstructions.GREEN + "|" + DisplayInstructions.RESET;
-
-            String displayStr = greenPipe + " %-7s " + greenPipe + " %-" + maxTaskLength + "s "
-                    + greenPipe + " %-11s "
-                    + greenPipe + " %-9s "
-                    + greenPipe + " " + "%-" + maxStatusLength
-                    + "s" + " " + greenPipe;
-
-            String userStatus = t.getStatus().toLowerCase();
-            String statusColor = UserStatus.completedStatus.contains(userStatus) ? DisplayInstructions.SUCCESS
-                    : UserStatus.inCompleteStatus.contains(userStatus) ? DisplayInstructions.UNSUCCESS
-                            : UserStatus.cannotCompleteStatus.contains(userStatus) ? DisplayInstructions.ABANDONED : "";
-
-            if (UserStatus.completedStatus.contains(userStatus) || UserStatus.inCompleteStatus.contains(userStatus)
-                    || UserStatus.cannotCompleteStatus.contains(userStatus)) {
-                displayStr = greenPipe + " %-7s " + greenPipe + " %-" + maxTaskLength + "s "
-                        + greenPipe + " %-11s "
-                        + greenPipe + " %-9s "
-                        + greenPipe + " " + statusColor + "%-" + maxStatusLength
-                        + "s" + reset + " " + greenPipe;
-
-            }
-
-            System.out.printf(displayStr, t.getTaskNo(),
-                    t.getTask(), t.getDate(),
-                    t.getTime(),
-                    t.getStatus());
-            System.out.println();
-
-            DisplayInstructions.printLine(dashLineLength, DisplayInstructions.GREEN);
-
+        if(numberOfCmds > 2) {
+            DisplayInstructions.printError("Invalid format for Display command!");
+            return;
         }
+
+        if(args.length == 1) {
+            DisplayInstructions.displayTodos(existingTodos, maxTaskLength, maxStatusLength);
+            return ;
+        }
+
+        switch (args[1].toLowerCase()) {
+            case "completed" -> DisplayInstructions.displayTodos(completedTodos, maxTaskLength, maxStatusLength);
+            case "incompleted" -> DisplayInstructions.displayTodos(inCompleteTodos, maxTaskLength, maxStatusLength);
+            case "skipped" -> DisplayInstructions.displayTodos(cannotCompleteTodos, maxTaskLength, maxStatusLength);
+            default -> DisplayInstructions.printError("Tasks not found!");
+        }
+        
+
 
     }
 

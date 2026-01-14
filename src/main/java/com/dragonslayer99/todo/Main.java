@@ -67,7 +67,7 @@ public class Main {
                         command.deleteTodo(usercommand);
                         break;
                     case "display":
-                        command.display();
+                        command.display(usercommand);
                         break;
                     case "exit":
                         break OUTER;
