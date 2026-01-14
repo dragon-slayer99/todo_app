@@ -39,7 +39,7 @@ public class Main {
 
                 if (("add".equals(scannerCmd[0]) || "delete".equals(scannerCmd[0]) || "update".equals(scannerCmd[0]))
                         && scannerCmd.length <= 1) {
-                    DisplayInstructions.printError("Please enter valid arguments!");
+                    DisplayInstructions.printError("Invalid command format! (eg. < add | delete | update > < task_name | taskno | taskno <status> >)");
                     continue;
                 }
 
@@ -53,6 +53,9 @@ public class Main {
                     case "y", "yes":
                         command.clearTodo(usercommand);
                         break;
+                    case "n", "no", "N", "No", "NO":
+                        DisplayInstructions.printSuccess("Deletion process aborted!");
+                        break;    
                     case "delete":
                         boolean warningGiven = false;
                         if (scannerCmd[1].equals("*") && !warningGiven) {

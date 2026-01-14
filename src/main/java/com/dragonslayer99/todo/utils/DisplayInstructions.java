@@ -21,6 +21,8 @@ public class DisplayInstructions {
         public static final String BGWHITE = "\u001B[47m";
 
         public static final String SUCCESS = "\u001B[38;5;227m";
+        public static final String UNSUCCESS = "\u001B[38;5;45m";
+        public static final String ABANDONED = "\u001B[38;5;202m";
 
         public void displayInstruction() {
                 final String ASCII_ART = """
