@@ -56,7 +56,7 @@ public class DisplayInstructions {
                                 "5. Save changes: " + PURPLE + "save" + RESET);
                 System.out.println(
                                 "6. To exit the program: " + ORANGE + "Exit" + RESET);
-
+                System.out.println();                
         }
 
         public static void printLine(int dashLineLength, String color) {

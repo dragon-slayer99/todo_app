@@ -60,6 +60,7 @@ public class Main {
                     }
                     case "display" -> command.display(usercommand);
                     case "save" -> command.save();
+                    case "clear" -> command.clear();
                     case "exit" -> {
                         break OUTER;
                     }

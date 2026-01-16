@@ -24,7 +24,7 @@ public class Commands {
     File file = new File(FileOperations.FILE_NAME);
     int maxTaskLength = 6;
     int maxStatusLength = 15;
-    private int taskNo;
+    private int taskNo = 1;
 
     public Commands() throws IOException {
         loadTodos(objectMapper, file);
@@ -50,6 +50,8 @@ public class Commands {
             int currTaskLength = t.getTask().length();
             int currStatusLength = t.getStatus().length();
 
+            taskNo = Integer.parseInt(t.getTaskNo());
+
             if (currTaskLength > maxTaskLength) {
                 maxTaskLength = currTaskLength;
             }
@@ -69,7 +71,7 @@ public class Commands {
             }
         }
 
-        taskNo = existingTodos.isEmpty() ? 1 : existingTodos.size() - 1;
+        taskNo++;
 
         maxStatusLength += 2; // little spacing for more readablity of the task
         maxTaskLength += 2;
@@ -239,6 +241,28 @@ public class Commands {
             DisplayInstructions.printError("Error while writing to the file!");
 
         }
+    }
+
+    public void clear() {
+
+        try {
+
+            String os = System.getProperty("os.name").toLowerCase();
+
+            if (os.contains("windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+
+        } catch (IOException | InterruptedException e) {
+            DisplayInstructions.printError("Error occured in the terminal!");
+        }
+
+        DisplayInstructions displayInstructionsObj = new DisplayInstructions();
+
+        displayInstructionsObj.displayInstruction();
+
     }
 
 }
