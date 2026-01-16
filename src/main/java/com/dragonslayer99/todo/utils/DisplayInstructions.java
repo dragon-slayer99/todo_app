@@ -53,7 +53,9 @@ public class DisplayInstructions {
                 System.out.println(
                                 "4. Display the task list: " + CYAN + "display" + RESET);
                 System.out.println(
-                                "5. To exit the program: " + ORANGE + "Exit" + RESET);
+                                "5. Save changes: " + PURPLE + "save" + RESET);
+                System.out.println(
+                                "6. To exit the program: " + ORANGE + "Exit" + RESET);
 
         }
 

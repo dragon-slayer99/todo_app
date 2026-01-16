@@ -25,7 +25,7 @@ public class UserStatus {
             "not started", "in_progress", "on_hold", "review"));
 
     public final static HashSet<String> cannotCompleteStatus = new HashSet<>(Set.of(
-            "cancelled", "canceled", "aborted", "stopped", "terminated", "dropped", "impossible", "not possible",
+            "cancelled", "canceled", "aborted", "stopped", "terminated", "dropped", "impossible", "not possible", "abandoned",
             "cannot be done", "infeasible", "unachievable", "not achievable", "permanently blocked", "blocked forever",
             "hard blocked", "deadlocked", "invalid", "obsolete", "deprecated", "no longer needed", "no longer required",
             "irrelevant", "failed permanently", "failed irrecoverably", "unrecoverable failure", "fatal error",

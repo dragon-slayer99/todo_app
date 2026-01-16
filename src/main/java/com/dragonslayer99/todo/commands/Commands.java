@@ -60,9 +60,9 @@ public class Commands {
 
             String todoStatus = t.getStatus().toLowerCase();
 
-            if(UserStatus.completedStatus.contains(todoStatus)) {
+            if (UserStatus.completedStatus.contains(todoStatus)) {
                 completedTodos.add(t);
-            } else if(UserStatus.inCompleteStatus.contains(todoStatus)) {
+            } else if (UserStatus.inCompleteStatus.contains(todoStatus)) {
                 inCompleteTodos.add(t);
             } else {
                 cannotCompleteTodos.add(t);
@@ -88,6 +88,7 @@ public class Commands {
         // loadTodos(objectMapper, file);
 
         existingTodos.add(jsonTodo);
+        inCompleteTodos.add(jsonTodo);
         if (task.length() > maxTaskLength) {
             maxTaskLength = task.length() + 2;
         }
@@ -121,7 +122,7 @@ public class Commands {
 
                 }
                 t.setStatus(newStatus);
-                if(UserStatus.completedStatus.contains(newStatus.toLowerCase())) {
+                if (UserStatus.completedStatus.contains(newStatus.toLowerCase())) {
                     completedTodos.add(t);
 
                     inCompleteTodos.remove(t);
@@ -195,14 +196,14 @@ public class Commands {
 
         int numberOfCmds = args.length;
 
-        if(numberOfCmds > 2) {
+        if (numberOfCmds > 2) {
             DisplayInstructions.printError("Invalid format for Display command!");
             return;
         }
 
-        if(args.length == 1) {
+        if (args.length == 1) {
             DisplayInstructions.displayTodos(existingTodos, maxTaskLength, maxStatusLength);
-            return ;
+            return;
         }
 
         switch (args[1].toLowerCase()) {
@@ -211,8 +212,6 @@ public class Commands {
             case "skipped" -> DisplayInstructions.displayTodos(cannotCompleteTodos, maxTaskLength, maxStatusLength);
             default -> DisplayInstructions.printError("Tasks not found!");
         }
-        
-
 
     }
 
@@ -227,6 +226,19 @@ public class Commands {
         }
         System.out.println("Program terminated!");
 
+    }
+
+    public void save() {
+        try {
+
+            objectMapper.writeValue(file, existingTodos);
+            DisplayInstructions.printSuccess("Tasks saved successfully!");
+
+        } catch (IOException e) {
+
+            DisplayInstructions.printError("Error while writing to the file!");
+
+        }
     }
 
 }

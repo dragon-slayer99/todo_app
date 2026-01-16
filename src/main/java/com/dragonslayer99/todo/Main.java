@@ -44,19 +44,11 @@ public class Main {
                 }
 
                 switch (scannerCmd[0].toLowerCase()) {
-                    case "add":
-                        command.addTodo(usercommand);
-                        break;
-                    case "update":
-                        command.updateTodo(usercommand);
-                        break;
-                    case "y", "yes":
-                        command.clearTodo(usercommand);
-                        break;
-                    case "n", "no", "N", "No", "NO":
-                        DisplayInstructions.printSuccess("Deletion process aborted!");
-                        break;    
-                    case "delete":
+                    case "add" -> command.addTodo(usercommand);
+                    case "update" -> command.updateTodo(usercommand);
+                    case "y", "yes" -> command.clearTodo(usercommand);
+                    case "n", "no", "N", "No", "NO" -> DisplayInstructions.printSuccess("Deletion process aborted!");
+                    case "delete" -> {
                         boolean warningGiven = false;
                         if (scannerCmd[1].equals("*") && !warningGiven) {
                             DisplayInstructions.printError("This action will delete every saved task!");
@@ -65,16 +57,14 @@ public class Main {
                             break;
                         }
                         command.deleteTodo(usercommand);
-                        break;
-                    case "display":
-                        command.display(usercommand);
-                        break;
-                    case "exit":
+                    }
+                    case "display" -> command.display(usercommand);
+                    case "save" -> command.save();
+                    case "exit" -> {
                         break OUTER;
+                    }
 
-                    default:
-                        DisplayInstructions.printError("Please enter valid command!");
-                        break;
+                    default -> DisplayInstructions.printError("Please enter valid command!");
                 }
             }
         } catch (Exception e) {
